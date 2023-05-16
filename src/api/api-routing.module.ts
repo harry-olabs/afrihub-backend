@@ -1,0 +1,26 @@
+import { Module } from '@nestjs/common';
+import { RouterModule } from '@nestjs/core';
+
+import { AuthModule } from './auth/auth.module';
+import { UsersModule } from './users/users.module';
+
+@Module({
+  imports: [
+    RouterModule.register([
+      {
+        path: 'api',
+        children: [
+          {
+            path: 'auth',
+            module: AuthModule,
+          },
+          {
+            path: 'users',
+            module: UsersModule,
+          },
+        ],
+      },
+    ]),
+  ],
+})
+export class ApiRoutingModule {}

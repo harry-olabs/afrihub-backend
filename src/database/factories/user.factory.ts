@@ -10,6 +10,7 @@ define(User, () => {
   user.firstName = firstName;
   user.lastName = lastName;
   user.email = faker.internet.email({ firstName, lastName });
+  user.password = 'secret123';
 
   return user;
 });

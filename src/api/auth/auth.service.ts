@@ -1,30 +1,39 @@
 import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
+import * as bcrypt from 'bcrypt';
 
-import { CreateAuthDto } from './dto/create-auth.dto';
-import { UpdateAuthDto } from './dto/update-auth.dto';
+import { User } from '../users/entities/user.entity';
+import { UsersRepository } from '../users/users.repository';
+import { LoginAuthDto } from './dto/login-auth.dto';
+import { SignUpAuthDto } from './dto/signup-auth.dto';
 
 @Injectable()
 export class AuthService {
-  constructor(private configService: ConfigService) {}
+  constructor(private readonly usersRepo: UsersRepository) {}
 
-  create(createAuthDto: CreateAuthDto) {
-    return 'This action adds a new auth';
+  async signUp(dto: SignUpAuthDto) {
+    const user = new User();
+    user.email = dto.email;
+    user.firstName = dto.firstName;
+    user.lastName = dto.lastName;
+    user.password = await this.hashPassword(dto.password);
+
+    const newUser = await this.usersRepo.save(user);
+    return newUser;
   }
 
-  findAll() {
-    return this.configService.get('SUPPORT_EMAIL');
+  async login(dto: LoginAuthDto) {
+    return 'login';
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} auth`;
+  async logout() {
+    return 'logout';
   }
 
-  update(id: number, updateAuthDto: UpdateAuthDto) {
-    return `This action updates a #${id} auth`;
+  async refreshToken() {
+    return 'refresh';
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} auth`;
+  async hashPassword(password: string) {
+    return bcrypt.hash(password, 10);
   }
 }

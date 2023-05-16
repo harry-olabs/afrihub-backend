@@ -1,18 +1,16 @@
 import * as path from 'path';
 import * as dotenv from 'dotenv';
 
+const env = (key: string) => process.env[key];
 /**
  * Load .env file
  * @example It loads .env.test file when NODE_ENV=test
  */
-const env = (key: string) => process.env[key];
 const envFile = `.env${env('NODE_ENV') ? `.${env('NODE_ENV')}` : ''}`;
 
 dotenv.config({
   path: path.resolve(__dirname, envFile),
 });
-
-const isTestEnvironment = env('NODE_ENV') === 'true';
 
 export default {
   type: env('DB_DIALECT') as any,
@@ -27,6 +25,6 @@ export default {
   factories: [path.resolve(__dirname, 'src/database/factories/**/*.ts')],
   logger: 'advanced-console',
   logging: ['warn', 'error'],
-  synchronize: isTestEnvironment,
-  dropSchema: isTestEnvironment,
+  synchronize: env('DB_SYNCHRONIZE') === 'true',
+  dropSchema: env('DB_DROP_SCHEMA') === 'true',
 };
