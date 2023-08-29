@@ -9,7 +9,6 @@ export class SignUpAuthDto {
   @IsString()
   lastName: string;
 
-  @IsNotEmpty()
   @IsEmail()
   email: string;
 

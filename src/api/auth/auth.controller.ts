@@ -1,6 +1,21 @@
-import { Controller, Post, Body } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Get,
+  UseGuards,
+  Req,
+  Request,
+  Res,
+  UseInterceptors,
+  ClassSerializerInterceptor,
+} from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
+import { Response } from 'express';
 
 import { AuthService } from './auth.service';
+import { AT_STRATEGY } from './constants/strategy.constant';
+// import { IAuthResponseDto } from './dto/auth-response.dto';
 import { LoginAuthDto } from './dto/login-auth.dto';
 import { SignUpAuthDto } from './dto/signup-auth.dto';
 
@@ -9,13 +24,22 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('signup')
-  signUp(@Body() signUpAuthDto: SignUpAuthDto) {
-    return this.authService.signUp(signUpAuthDto);
+  async signUp(@Body() signUpAuthDto: SignUpAuthDto, @Res() res: Response) {
+    const { accessToken, refreshToken } = await this.authService.signUp(
+      signUpAuthDto,
+    );
+
+    res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: true });
+    res.json({ accessToken });
   }
 
   @Post('login')
-  login(@Body() loginAuthDto: LoginAuthDto) {
-    return this.authService.login(loginAuthDto);
+  async login(@Body() loginAuthDto: LoginAuthDto, @Res() res: Response) {
+    const { accessToken, refreshToken } = await this.authService.login(
+      loginAuthDto,
+    );
+    res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: true });
+    res.json({ accessToken });
   }
 
   @Post('logout')
@@ -26,5 +50,12 @@ export class AuthController {
   @Post('refresh')
   refreshToken() {
     return this.authService.refreshToken();
+  }
+
+  @Get('/me')
+  @UseInterceptors(ClassSerializerInterceptor)
+  @UseGuards(AuthGuard(AT_STRATEGY))
+  meProfile(@Req() req: Request) {
+    return this.authService.getProfile((req as any).user.sub);
   }
 }

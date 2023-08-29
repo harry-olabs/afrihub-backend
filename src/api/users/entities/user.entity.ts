@@ -1,10 +1,13 @@
+import { Exclude } from 'class-transformer';
 import {
   Column,
   CreateDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { RefreshToken } from '../../auth/entities/refresh-token.entity';
 
 @Entity({ name: 'users' })
 export class User {
@@ -21,6 +24,7 @@ export class User {
   email: string;
 
   @Column()
+  @Exclude()
   password: string;
 
   @CreateDateColumn()
@@ -28,4 +32,7 @@ export class User {
 
   @UpdateDateColumn()
   updatedAt: string;
+
+  @OneToMany(() => RefreshToken, (refreshToken) => refreshToken.user)
+  refreshTokens: RefreshToken[];
 }

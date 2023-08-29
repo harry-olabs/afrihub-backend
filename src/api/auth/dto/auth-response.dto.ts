@@ -1,1 +1,4 @@
-// export interface IAuthResponseDto {}
+export type IAuthResponseDto = {
+  accessToken: string;
+  refreshToken: string;
+};
