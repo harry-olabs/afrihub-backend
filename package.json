@@ -27,6 +27,7 @@
     "schema:drop": "npm run typeorm -- schema:drop -d src/database/migration.config.ts",
     "seed:config": "ts-node ./node_modules/typeorm-seeding/dist/cli.js config",
     "seed:run": "ts-node ./node_modules/typeorm-seeding/dist/cli.js seed",
+    "db:setup": "npm-run-all schema:drop migration:run",
     "db:refresh": "npm-run-all schema:drop migration:run seed:run"
   },
   "dependencies": {
