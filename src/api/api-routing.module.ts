@@ -6,6 +6,8 @@ import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
+    AuthModule,
+    UsersModule,
     RouterModule.register([
       {
         path: 'api',
