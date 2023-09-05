@@ -1,11 +1,11 @@
 import { Controller, Get } from '@nestjs/common';
 
-@Controller('api')
-export class ApiController {
+@Controller()
+export class AppController {
   @Get()
   main() {
     return {
-      info: 'AfriHub API',
+      info: 'Welcome to Afridev Hub',
     };
   }
 }

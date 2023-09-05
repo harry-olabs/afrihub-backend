@@ -56,6 +56,7 @@ export class AuthController {
   @UseInterceptors(ClassSerializerInterceptor)
   @UseGuards(AuthGuard(AT_STRATEGY))
   meProfile(@Req() req: Request) {
-    return this.authService.getProfile((req as any).user.sub);
+    const userId = (req as any).user.sub;
+    return this.authService.getProfile(userId);
   }
 }
